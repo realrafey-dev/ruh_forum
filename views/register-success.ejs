@@ -15,7 +15,10 @@
         </div>
         <div class="cred-item">
           <span class="cred-label"><i class="fas fa-lock"></i> Password:</span>
-          <span class="cred-value"><%= password %></span>
+          <span class="cred-value" id="passwordVal"><%= password %></span>
+          <button class="copy-btn" onclick="copyPassword()" title="Copy password">
+            <i class="fas fa-copy"></i>
+          </button>
         </div>
       </div>
       <p class="form-note" style="text-align:center;">
@@ -44,10 +47,12 @@
   background: white;
   border-radius: 8px;
   margin: 10px 0;
+  gap: 10px;
 }
 .cred-label {
   font-weight: 500;
   color: var(--text-dark);
+  white-space: nowrap;
 }
 .cred-value {
   font-family: monospace;
@@ -57,6 +62,35 @@
   background: var(--bg-light);
   padding: 4px 12px;
   border-radius: 4px;
+  flex: 1;
+  word-break: break-all;
 }
+.copy-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+.copy-btn:hover { background: var(--primary-dark); transform: scale(1.05); }
+.copy-btn.copied { background: var(--success); }
 </style>
+<script>
+function copyPassword() {
+  const val = document.getElementById('passwordVal').textContent;
+  navigator.clipboard.writeText(val).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.innerHTML = '<i class="fas fa-check"></i>';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = '<i class="fas fa-copy"></i>';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+</script>
 <%- include('partials/footer') %>
