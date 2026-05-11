@@ -1,57 +1,51 @@
-const https = require('https');
+const nodemailer = require('nodemailer');
 
-const sendResend = async (to, subject, html) => {
-  const key = process.env.RESEND_API_KEY;
-  if (!key || key === 're_xxxx' || key.includes('dummy')) return { sent: false, error: 'no_key' };
+const sendMail = async (to, subject, html) => {
+  const { EMAIL_USER, EMAIL_PASS } = process.env;
+  if (!EMAIL_USER || !EMAIL_PASS || EMAIL_USER === 'your-email@gmail.com') return false;
 
-  return new Promise((resolve) => {
-    const data = JSON.stringify({ from: 'RUH Forum <onboarding@resend.dev>', to, subject, html });
+  const configs = [
+    { host: 'smtp.gmail.com', port: 465, secure: true },
+    { host: 'smtp.gmail.com', port: 587, secure: false },
+    { host: 'smtp.gmail.com', port: 25, secure: false }
+  ];
 
-    const req = https.request({
-      hostname: 'api.resend.com', path: '/emails', method: 'POST',
-      headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) }
-    }, (res) => {
-      let body = '';
-      res.on('data', (c) => body += c);
-      res.on('end', () => {
-        if (res.statusCode === 200) resolve({ sent: true });
-        else {
-          const errMsg = `Resend ${res.statusCode}: ${body}`;
-          console.error(errMsg);
-          resolve({ sent: false, error: errMsg });
-        }
+  for (const cfg of configs) {
+    try {
+      const t = nodemailer.createTransport({
+        host: cfg.host, port: cfg.port, secure: cfg.secure,
+        auth: { user: EMAIL_USER, pass: EMAIL_PASS },
+        connectionTimeout: 5000, greetingTimeout: 5000,
+        tls: { rejectUnauthorized: false }
       });
-    });
-
-    req.on('error', (e) => resolve({ sent: false, error: e.message }));
-    req.write(data);
-    req.end();
-  });
+      await t.sendMail({ from: `"RUH Forum" <${EMAIL_USER}>`, to, subject, html });
+      console.log(`Email sent via port ${cfg.port}`);
+      return true;
+    } catch (e) {
+      console.log(`Port ${cfg.port} failed: ${e.code || e.message}`);
+    }
+  }
+  return false;
 };
 
-const sendWelcomeEmail = async (to, username, password) => {
-  const r = await sendResend(to, 'Welcome to RUH Forum',
+const sendWelcomeEmail = async (to, username, password) =>
+  sendMail(to, 'Welcome to RUH Forum',
     `<div style="font-family:Arial;max-width:600px;margin:0 auto;background:#f5f0e8;padding:30px;border-radius:15px;">
       <h1 style="color:#1a5c2a;text-align:center;">🕌 RUH Forum</h1>
       <p style="text-align:center;color:#8b6914;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
       <p>Assalamu Alaikum,<br>Your account has been created.</p>
       <div style="background:white;padding:15px;border-radius:8px;">
         <p><strong>Username:</strong> ${username}</p>
-        <p><strong>Password:</strong> ${password}</p>
-      </div>
+        <p><strong>Password:</strong> ${password}</p></div>
       <p style="color:#c0392b;">⚠ Change password after login.</p>
       <p>Jazakallah Khair!</p></div>`);
-  return r.sent;
-};
 
-const sendDonationReceipt = async (to, name, amount, type) => {
-  const r = await sendResend(to, 'Donation Receipt - RUH Forum',
+const sendDonationReceipt = async (to, name, amount, type) =>
+  sendMail(to, 'Donation Receipt - RUH Forum',
     `<div style="font-family:Arial;max-width:600px;margin:0 auto;background:#f5f0e8;padding:30px;border-radius:15px;">
       <p>Assalamu Alaikum ${name},</p>
-      <p>Thank you for your donation! (Rs.${amount} - ${type})</p>
-      <p>Status: Pending Verification</p>
+      <p>Thank you! Rs.${amount} - ${type}</p>
+      <p>Status: Pending</p>
       <p>Jazakallah Khair!</p></div>`);
-  return r.sent;
-};
 
 module.exports = { sendWelcomeEmail, sendDonationReceipt };
