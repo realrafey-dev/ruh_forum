@@ -1,52 +1,32 @@
-const nodemailer = require('nodemailer');
-require('dotenv').config();
+const { Resend } = require('resend');
 
-let transporter = null;
+let resend = null;
 
-const getTransporter = () => {
-  if (transporter) return transporter;
-
-  const user = process.env.EMAIL_USER;
-  const pass = process.env.EMAIL_PASS;
-
-  if (!user || !pass || user === 'your-email@gmail.com') {
-    return null;
-  }
-
-  const port = parseInt(process.env.EMAIL_PORT || '465');
-  transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port,
-    secure: port === 465,
-    auth: { user, pass },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000
-  });
-
-  return transporter;
+const getClient = () => {
+  if (resend) return resend;
+  const key = process.env.RESEND_API_KEY;
+  if (!key || key === 're_xxxx') return null;
+  resend = new Resend(key);
+  return resend;
 };
 
 const sendWelcomeEmail = async (to, username, password) => {
-  const t = getTransporter();
-  if (!t) {
-    console.log('Email not configured - skipping welcome email');
-    return false;
-  }
+  const r = getClient();
+  if (!r) return false;
 
   try {
-    await t.sendMail({
-      from: `"RUH Forum" <${process.env.EMAIL_USER}>`,
+    await r.emails.send({
+      from: 'RUH Forum <onboarding@resend.dev>',
       to,
       subject: 'Welcome to RUH Forum - Your Account Details',
       html: `
-        <div style="font-family: Arial; max-width: 600px; margin: 0 auto; background: #f5f0e8; padding: 30px; border-radius: 15px; border: 2px solid #c9a96e;">
+        <div style="font-family: Arial; max-width: 600px; margin: 0 auto; background: #f5f0e8; padding: 30px; border-radius: 15px;">
           <h1 style="color: #1a5c2a; text-align: center;">🕌 RUH Forum</h1>
           <p style="text-align: center; color: #8b6914;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
           <h2 style="color: #1a5c2a;">Welcome to RUH Forum!</h2>
           <p>Assalamu Alaikum,</p>
-          <p>Your account has been created. Login details:</p>
-          <div style="background: white; padding: 15px; border-radius: 8px;">
+          <p>Your account has been created. Login details below:</p>
+          <div style="background: white; padding: 15px; border-radius: 8px; margin:15px 0;">
             <p><strong>Username:</strong> ${username}</p>
             <p><strong>Password:</strong> ${password}</p>
           </div>
@@ -57,18 +37,18 @@ const sendWelcomeEmail = async (to, username, password) => {
     });
     return true;
   } catch (err) {
-    console.error('Email sending failed:', err.message);
+    console.error('Email send error:', err.message);
     return false;
   }
 };
 
 const sendDonationReceipt = async (to, name, amount, type) => {
-  const t = getTransporter();
-  if (!t) return false;
+  const r = getClient();
+  if (!r) return false;
 
   try {
-    await t.sendMail({
-      from: `"RUH Forum" <${process.env.EMAIL_USER}>`,
+    await r.emails.send({
+      from: 'RUH Forum <onboarding@resend.dev>',
       to,
       subject: 'Donation Receipt - RUH Forum',
       html: `
@@ -87,7 +67,7 @@ const sendDonationReceipt = async (to, name, amount, type) => {
     });
     return true;
   } catch (err) {
-    console.error('Receipt email failed:', err.message);
+    console.error('Receipt error:', err.message);
     return false;
   }
 };
