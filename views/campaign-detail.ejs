@@ -1,0 +1,78 @@
+<%- include('partials/header') %>
+<section class="detail-section">
+  <div class="container">
+    <div class="detail-card">
+      <div class="detail-header">
+        <i class="fas fa-bullhorn"></i>
+        <h1><%= campaign.title %></h1>
+      </div>
+
+      <p class="campaign-category"><i class="fas fa-tag"></i> <%= campaign.category %></p>
+      <p class="detail-desc"><%= campaign.description || 'No description provided.' %></p>
+
+      <div class="progress-section">
+        <div class="progress-bar large">
+          <div class="progress-fill" style="width: <%= Math.min(100, (campaign.raised_amount / campaign.target_amount) * 100) %>%"></div>
+        </div>
+        <p class="progress-text">
+          <strong>Rs. <%= Number(campaign.raised_amount).toLocaleString() %></strong> raised
+          of Rs. <%= Number(campaign.target_amount).toLocaleString() %> target
+        </p>
+      </div>
+
+      <div class="donate-section-inline">
+        <h3>Donate to this Campaign</h3>
+        <form action="/campaigns/<%= campaign.id %>/donate" method="POST" class="donate-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Name *</label>
+              <input type="text" name="name" required>
+            </div>
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" name="email" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" name="phone">
+          </div>
+          <div class="form-group">
+            <label>Amount *</label>
+            <input type="number" name="amount" required min="1">
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea name="message" rows="2"></textarea>
+          </div>
+          <div class="form-checkboxes">
+            <label class="checkbox-label">
+              <input type="checkbox" name="is_anonymous">
+              <span>Donate Anonymously (name hide karein)</span>
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Donate Now</button>
+        </form>
+      </div>
+
+      <% if (donations && donations.length > 0) { %>
+        <div class="donors-section">
+          <h3>Donors</h3>
+          <div class="donors-list">
+            <% donations.forEach(function(d) { %>
+              <div class="donor-item">
+                <i class="fas fa-user-circle"></i>
+                <div>
+                  <strong><%= d.is_anonymous ? 'Anonymous' : d.name %></strong>
+                  <p>Rs. <%= Number(d.amount).toLocaleString() %> - <%= new Date(d.created_at).toLocaleDateString() %></p>
+                  <% if (d.message) { %><p class="donor-message">"<%= d.message %>"</p><% } %>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

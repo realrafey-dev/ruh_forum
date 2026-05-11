@@ -1,0 +1,36 @@
+<%- include('partials/header') %>
+<section class="donation-history">
+  <div class="container">
+    <div class="page-header">
+      <h1><i class="fas fa-history"></i> Donation History</h1>
+    </div>
+
+    <% if (donations && donations.length > 0) { %>
+      <div class="history-list">
+        <% donations.forEach(function(d) { %>
+          <div class="history-card">
+            <div class="history-icon">
+              <i class="fas fa-<%= d.status === 'verified' ? 'check-circle' : d.status === 'rejected' ? 'times-circle' : 'clock' %>"></i>
+            </div>
+            <div class="history-info">
+              <h4>Rs. <%= Number(d.amount).toLocaleString() %></h4>
+              <p><%= d.trust_title || d.type.charAt(0).toUpperCase() + d.type.slice(1) %></p>
+              <small><%= new Date(d.created_at).toLocaleDateString() %></small>
+            </div>
+            <div class="history-status">
+              <span class="status-badge status-<%= d.status %>"><%= d.status %></span>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <h3>No Donations Yet</h3>
+        <p>Start your journey of giving today!</p>
+        <a href="/donate" class="btn btn-primary">Donate Now</a>
+      </div>
+    <% } %>
+  </div>
+</section>
+<%- include('partials/footer') %>

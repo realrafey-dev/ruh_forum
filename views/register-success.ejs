@@ -1,0 +1,62 @@
+<%- include('partials/header') %>
+<section class="auth-section">
+  <div class="container">
+    <div class="auth-card success-card">
+      <div class="auth-header">
+        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+        <h2 style="color: var(--success);">Account Created Successfully!</h2>
+        <p>Assalamu Alaikum, <%= full_name %>!</p>
+      </div>
+      <div class="credentials-box">
+        <h3><i class="fas fa-id-card"></i> Your Login Credentials</h3>
+        <div class="cred-item">
+          <span class="cred-label"><i class="fas fa-user"></i> Username:</span>
+          <span class="cred-value"><%= username %></span>
+        </div>
+        <div class="cred-item">
+          <span class="cred-label"><i class="fas fa-lock"></i> Password:</span>
+          <span class="cred-value"><%= password %></span>
+        </div>
+      </div>
+      <p class="form-note" style="text-align:center;">
+        <i class="fas fa-info-circle"></i>
+        <% if (emailSent) { %>Email bhi bhej di gayi hai.<% } else { %>Email send nahi hui (Gmail App Password configure nahi hai). Yahan save karein!<% } %>
+      </p>
+      <a href="/login" class="btn btn-primary btn-full">
+        <i class="fas fa-sign-in-alt"></i> Login Now
+      </a>
+    </div>
+  </div>
+</section>
+<style>
+.credentials-box {
+  background: #fef9e7;
+  border: 2px dashed var(--secondary);
+  border-radius: var(--radius);
+  padding: 25px;
+  margin: 20px 0;
+}
+.cred-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background: white;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+.cred-label {
+  font-weight: 500;
+  color: var(--text-dark);
+}
+.cred-value {
+  font-family: monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--bg-light);
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+</style>
+<%- include('partials/footer') %>

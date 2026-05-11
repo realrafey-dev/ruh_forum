@@ -1,0 +1,52 @@
+<%- include('partials/header') %>
+<section class="trusts-section">
+  <div class="container">
+    <div class="page-header">
+      <h1><i class="fas fa-shield-alt"></i> Trusts</h1>
+      <p>Create a trust for your loved ones & let others contribute with peace of mind</p>
+      <% if (user) { %>
+        <a href="/trusts/create" class="btn btn-primary"><i class="fas fa-plus"></i> Create Trust</a>
+      <% } %>
+    </div>
+
+    <% if (user && userTrusts && userTrusts.length > 0) { %>
+      <h2>My Trusts</h2>
+      <div class="trusts-grid">
+        <% userTrusts.forEach(function(t) { %>
+          <div class="trust-card">
+            <h3><%= t.title %></h3>
+            <p class="relation"><i class="fas fa-heart"></i> <%= t.relation %></p>
+            <p class="desc"><%= t.description %></p>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: <%= Math.min(100, (t.raised_amount / (t.target_amount || 1)) * 100) %>%"></div>
+            </div>
+            <p class="progress-text">Rs. <%= Number(t.raised_amount).toLocaleString() %> raised</p>
+            <a href="/trusts/<%= t.id %>" class="btn btn-small">View Details</a>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <h2>All Active Trusts</h2>
+    <div class="trusts-grid">
+      <% if (trusts && trusts.length > 0) { %>
+        <% trusts.forEach(function(t) { %>
+          <div class="trust-card">
+            <h3><%= t.title %></h3>
+            <p class="creator"><i class="fas fa-user"></i> Created by: <%= t.creator_name %></p>
+            <p class="relation"><i class="fas fa-heart"></i> <%= t.relation %></p>
+            <p class="desc"><%= t.description %></p>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: <%= Math.min(100, (t.raised_amount / (t.target_amount || 1)) * 100) %>%"></div>
+            </div>
+            <p class="progress-text">Rs. <%= Number(t.raised_amount).toLocaleString() %> / Rs. <%= Number(t.target_amount).toLocaleString() %></p>
+            <a href="/trusts/<%= t.id %>" class="btn btn-small">Donate to this Trust</a>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <p class="empty-state">No active trusts yet. Be the first to create one!</p>
+      <% } %>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

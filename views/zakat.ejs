@@ -1,0 +1,67 @@
+<%- include('partials/header') %>
+<section class="zakat-section">
+  <div class="container">
+    <div class="page-header">
+      <h1><i class="fas fa-calculator"></i> Zakat Calculator</h1>
+      <p>"وَآتُوا الزَّكَاةَ" — "And give Zakat" (Quran 2:43)</p>
+    </div>
+
+    <div class="zakat-layout">
+      <div class="zakat-form-card">
+        <h3>Calculate Your Zakat</h3>
+        <form action="/zakat/calculate" method="POST" class="zakat-form">
+          <div class="form-group">
+            <label><i class="fas fa-coins"></i> Gold Value (Rs.)</label>
+            <input type="number" name="gold" step="0.01" placeholder="Value of gold you own">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-coins"></i> Silver Value (Rs.)</label>
+            <input type="number" name="silver" step="0.01" placeholder="Value of silver you own">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-money-bill"></i> Cash in Hand/Bank (Rs.)</label>
+            <input type="number" name="cash" step="0.01" placeholder="Cash, savings, bank balance">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-store"></i> Business Inventory Value (Rs.)</label>
+            <input type="number" name="business" step="0.01" placeholder="Value of business goods">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-home"></i> Investment Property Value (Rs.)</label>
+            <input type="number" name="property" step="0.01" placeholder="Properties held for investment">
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">
+            <i class="fas fa-calculator"></i> Calculate Zakat
+          </button>
+        </form>
+      </div>
+
+      <% if (locals.result) { %>
+        <div class="zakat-result-card">
+          <h3><i class="fas fa-file-invoice"></i> Zakat Result</h3>
+          <div class="result-item">
+            <span>Total Wealth:</span>
+            <strong>Rs. <%= Number(result.total).toLocaleString() %></strong>
+          </div>
+          <div class="result-item <%= result.eligible ? 'eligible' : 'not-eligible' %>">
+            <span>Nisab Eligibility:</span>
+            <strong><%= result.eligible ? 'Eligible' : 'Not Eligible' %></strong>
+          </div>
+          <% if (result.eligible) { %>
+            <div class="result-item highlight">
+              <span>Zakat Due (2.5%):</span>
+              <strong class="zakat-due">Rs. <%= Number(result.zakatDue).toLocaleString() %></strong>
+            </div>
+          <% } %>
+          <div class="nisab-info">
+            <p><small>Nisab: 85g Gold (Rs. <%= Number(result.nisabGold).toLocaleString() %>) or 612g Silver (Rs. <%= Number(result.nisabSilver).toLocaleString() %>)</small></p>
+          </div>
+          <% if (result.eligible) { %>
+            <a href="/donate?amount=<%= result.zakatDue %>" class="btn btn-primary btn-full">Pay Zakat Now</a>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

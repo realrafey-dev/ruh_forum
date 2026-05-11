@@ -1,0 +1,85 @@
+<%- include('partials/header') %>
+<section class="dashboard">
+  <div class="container">
+    <div class="welcome-banner">
+      <h1>Assalamu Alaikum, <span class="highlight"><%= user.full_name %></span>!</h1>
+      <p>Welcome to your RUH Forum Dashboard</p>
+    </div>
+
+    <div class="dashboard-stats">
+      <div class="dash-stat-card">
+        <i class="fas fa-donate"></i>
+        <h3><%= stats.donations %></h3>
+        <p>Total Donations</p>
+      </div>
+      <div class="dash-stat-card">
+        <i class="fas fa-rupee-sign"></i>
+        <h3>Rs. <%= Number(stats.amount).toLocaleString() %></h3>
+        <p>Total Donated</p>
+      </div>
+      <div class="dash-stat-card">
+        <i class="fas fa-shield-alt"></i>
+        <h3><%= stats.trusts %></h3>
+        <p>Trusts Created</p>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <a href="/donate" class="action-card">
+        <i class="fas fa-hand-holding-heart"></i>
+        <span>Donate Now</span>
+      </a>
+      <a href="/trusts/create" class="action-card">
+        <i class="fas fa-shield-alt"></i>
+        <span>Create Trust</span>
+      </a>
+      <a href="/trusts" class="action-card">
+        <i class="fas fa-list"></i>
+        <span>My Trusts</span>
+      </a>
+      <a href="/zakat" class="action-card">
+        <i class="fas fa-calculator"></i>
+        <span>Zakat Calc</span>
+      </a>
+      <a href="/change-password" class="action-card">
+        <i class="fas fa-key"></i>
+        <span>Change Password</span>
+      </a>
+      <a href="/admin" class="action-card" style="border: 2px solid #8b0000;">
+        <i class="fas fa-shield-alt" style="color:#8b0000;"></i>
+        <span style="color:#8b0000;">Admin Panel</span>
+      </a>
+    </div>
+
+    <div class="recent-section">
+      <h2>Recent Donations</h2>
+      <% if (recentDonations && recentDonations.length > 0) { %>
+        <div class="donation-table-wrapper">
+          <table class="donation-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% recentDonations.forEach(function(d) { %>
+                <tr>
+                  <td><%= new Date(d.created_at).toLocaleDateString() %></td>
+                  <td><%= d.trust_title || d.type.charAt(0).toUpperCase() + d.type.slice(1) %></td>
+                  <td>Rs. <%= Number(d.amount).toLocaleString() %></td>
+                  <td><span class="status-<%= d.status %>"><%= d.status %></span></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <p class="empty-state">No donations yet. <a href="/donate">Make your first donation!</a></p>
+      <% } %>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

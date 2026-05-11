@@ -1,0 +1,127 @@
+<%- include('partials/header') %>
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="container hero-content">
+    <div class="hero-text">
+      <p class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+      <h1>Welcome to <span class="highlight">RUH Forum</span></h1>
+      <p class="hero-subtitle">A Platform of Trust, Charity & Blessings</p>
+      <p class="hero-desc">Give Sadaqah, Create Trusts for Your Loved Ones, and Earn Rewards in the Hereafter</p>
+      <div class="hero-buttons">
+        <% if (user) { %>
+          <a href="/donate" class="btn btn-primary"><i class="fas fa-hand-holding-heart"></i> Donate Now</a>
+          <a href="/trusts/create" class="btn btn-secondary"><i class="fas fa-shield-alt"></i> Create Trust</a>
+        <% } else { %>
+          <a href="/register" class="btn btn-primary"><i class="fas fa-user-plus"></i> Get Started</a>
+          <a href="/donate" class="btn btn-secondary"><i class="fas fa-hand-holding-heart"></i> Donate as Guest</a>
+        <% } %>
+      </div>
+    </div>
+    <div class="hero-image">
+      <i class="fas fa-mosque mosque-icon"></i>
+    </div>
+  </div>
+</section>
+
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <i class="fas fa-hand-holding-heart"></i>
+        <h3>Rs. <%= stats ? Number(stats.total_raised).toLocaleString() : '0' %></h3>
+        <p>Total Raised</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-donate"></i>
+        <h3><%= stats ? stats.total_donations : '0' %></h3>
+        <p>Donations</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-shield-alt"></i>
+        <h3><%= stats ? stats.total_trusts : '0' %></h3>
+        <p>Active Trusts</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-bullhorn"></i>
+        <h3><%= stats ? stats.total_campaigns : '0' %></h3>
+        <p>Campaigns</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="container">
+    <h2 class="section-title">How It Works</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-user-plus"></i></div>
+        <h3>1. Register</h3>
+        <p>Create your account & receive credentials via email</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-hand-holding-heart"></i></div>
+        <h3>2. Donate Directly</h3>
+        <p>Transfer to bank account & share screenshot for verification</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3>3. Create Trust</h3>
+        <p>Create a trust in memory of a loved one & invite others to contribute</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
+        <h3>4. Track Impact</h3>
+        <p>View your donation history & see the difference you make</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how-to-donate">
+  <div class="container">
+    <h2 class="section-title">How to Donate</h2>
+    <div class="donate-methods">
+      <div class="method-card">
+        <i class="fas fa-university"></i>
+        <h3>Direct Bank Transfer</h3>
+        <div class="bank-details">
+          <p><strong>Bank:</strong> [Your Bank Name]</p>
+          <p><strong>Account:</strong> [Account Number]</p>
+          <p><strong>IBAN:</strong> [IBAN Number]</p>
+          <p><strong>Title:</strong> RUH Forum</p>
+        </div>
+        <p class="method-note">After transfer, upload screenshot on our platform</p>
+        <a href="/donate" class="btn btn-small">Donate Now</a>
+      </div>
+      <div class="method-card">
+        <i class="fas fa-shield-alt"></i>
+        <h3>Trust Donation</h3>
+        <p>Browse trusts created for loved ones & contribute with peace of mind</p>
+        <a href="/trusts" class="btn btn-small">View Trusts</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<% if (campaigns && campaigns.length > 0) { %>
+<section class="campaigns-preview">
+  <div class="container">
+    <h2 class="section-title">Active Campaigns</h2>
+    <div class="campaigns-grid">
+      <% campaigns.forEach(function(c) { %>
+        <div class="campaign-card">
+          <h3><%= c.title %></h3>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: <%= Math.min(100, (c.raised_amount / c.target_amount) * 100) %>%"></div>
+          </div>
+          <p class="progress-text">Rs. <%= Number(c.raised_amount).toLocaleString() %> / Rs. <%= Number(c.target_amount).toLocaleString() %></p>
+          <a href="/campaigns/<%= c.id %>" class="btn btn-small">View Details</a>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<%- include('partials/footer') %>

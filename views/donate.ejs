@@ -1,0 +1,78 @@
+<%- include('partials/header') %>
+<section class="donate-section">
+  <div class="container">
+    <div class="page-header">
+      <h1><i class="fas fa-hand-holding-heart"></i> Make a Donation</h1>
+      <p class="arabic-verse">"مَّثَلُ الَّذِينَ يُنفِقُونَ أَمْوَالَهُمُ فِي سَبِيلِ اللَّهِ كَمَثَلِ حَبَّةٍ"</p>
+    </div>
+
+    <div class="bank-info-card">
+      <h3><i class="fas fa-university"></i> Bank Transfer Details</h3>
+      <div class="bank-details">
+        <p><strong>Bank Name:</strong> [Your Bank Name]</p>
+        <p><strong>Account Holder:</strong> RUH Forum</p>
+        <p><strong>Account Number:</strong> [Account Number]</p>
+        <p><strong>IBAN:</strong> [IBAN Number]</p>
+        <p><strong>Branch:</strong> [Branch Name]</p>
+      </div>
+      <p class="bank-note"><i class="fas fa-info-circle"></i> Transfer the amount and upload the screenshot below</p>
+    </div>
+
+    <div class="donate-form-card">
+      <h3>Donation Form</h3>
+      <form action="/donate" method="POST" enctype="multipart/form-data" class="donate-form">
+        <% if (!user) { %>
+          <div class="form-row">
+            <div class="form-group">
+              <label><i class="fas fa-user"></i> Your Name *</label>
+              <input type="text" name="name" required placeholder="Full name">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-envelope"></i> Email *</label>
+              <input type="email" name="email" required placeholder="your@email.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-phone"></i> Phone</label>
+            <input type="tel" name="phone" placeholder="03xxxxxxxxx">
+          </div>
+        <% } else { %>
+          <input type="hidden" name="name" value="<%= user.full_name %>">
+          <input type="hidden" name="email" value="<%= user.email %>">
+        <% } %>
+
+        <div class="form-group">
+          <label><i class="fas fa-rupee-sign"></i> Amount *</label>
+          <input type="number" name="amount" required min="1" step="0.01" placeholder="Enter amount">
+        </div>
+
+        <div class="form-group">
+          <label><i class="fas fa-image"></i> Screenshot of Payment</label>
+          <input type="file" name="screenshot" accept="image/*" class="file-input">
+          <p class="form-note">Upload bank transfer screenshot (max 5MB)</p>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fas fa-comment"></i> Message (Optional)</label>
+          <textarea name="message" rows="2" placeholder="Any message or dua request..."></textarea>
+        </div>
+
+        <div class="form-checkboxes">
+          <label class="checkbox-label">
+            <input type="checkbox" name="is_anonymous">
+            <span>Donate Anonymously (Sadaqah)</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="zakat">
+            <span>This is Zakat</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full">
+          <i class="fas fa-paper-plane"></i> Submit Donation
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

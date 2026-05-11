@@ -1,0 +1,33 @@
+<%- include('partials/header') %>
+<section class="campaigns-section">
+  <div class="container">
+    <div class="page-header">
+      <h1><i class="fas fa-bullhorn"></i> Campaigns</h1>
+      <p>Support our ongoing campaigns and make a difference</p>
+    </div>
+
+    <div class="campaigns-grid full">
+      <% if (campaigns && campaigns.length > 0) { %>
+        <% campaigns.forEach(function(c) { %>
+          <div class="campaign-card-full">
+            <h3><%= c.title %></h3>
+            <p class="campaign-desc"><%= c.description %></p>
+            <p class="campaign-category"><i class="fas fa-tag"></i> <%= c.category %></p>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: <%= Math.min(100, (c.raised_amount / c.target_amount) * 100) %>%"></div>
+            </div>
+            <p class="progress-text">Rs. <%= Number(c.raised_amount).toLocaleString() %> / Rs. <%= Number(c.target_amount).toLocaleString() %></p>
+            <a href="/campaigns/<%= c.id %>" class="btn btn-primary">View Details & Donate</a>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="empty-state">
+          <i class="fas fa-box-open"></i>
+          <h3>No Active Campaigns</h3>
+          <p>Check back soon for new campaigns!</p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>
