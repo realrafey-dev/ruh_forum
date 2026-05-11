@@ -75,6 +75,18 @@ const initDB = async () => {
     `);
 
     await conn.query(`
+      CREATE TABLE IF NOT EXISTS email_queue (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        to_email VARCHAR(200) NOT NULL,
+        subject VARCHAR(500) NOT NULL,
+        html TEXT NOT NULL,
+        status ENUM('pending','sent','failed') DEFAULT 'pending',
+        error_msg TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await conn.query(`
       CREATE TABLE IF NOT EXISTS donations (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT,

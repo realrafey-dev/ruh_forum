@@ -1,35 +1,20 @@
-const nodemailer = require('nodemailer');
+const { pool } = require('../config/db');
 
-const sendMail = async (to, subject, html) => {
-  const { EMAIL_USER, EMAIL_PASS } = process.env;
-  if (!EMAIL_USER || !EMAIL_PASS || EMAIL_USER === 'your-email@gmail.com') return false;
-
-  const configs = [
-    { host: 'smtp.gmail.com', port: 465, secure: true },
-    { host: 'smtp.gmail.com', port: 587, secure: false },
-    { host: 'smtp.gmail.com', port: 25, secure: false }
-  ];
-
-  for (const cfg of configs) {
-    try {
-      const t = nodemailer.createTransport({
-        host: cfg.host, port: cfg.port, secure: cfg.secure,
-        auth: { user: EMAIL_USER, pass: EMAIL_PASS },
-        connectionTimeout: 5000, greetingTimeout: 5000,
-        tls: { rejectUnauthorized: false }
-      });
-      await t.sendMail({ from: `"RUH Forum" <${EMAIL_USER}>`, to, subject, html });
-      console.log(`Email sent via port ${cfg.port}`);
-      return true;
-    } catch (e) {
-      console.log(`Port ${cfg.port} failed: ${e.code || e.message}`);
-    }
+const queueEmail = async (to, subject, html) => {
+  try {
+    await pool.query(
+      'INSERT INTO email_queue (to_email, subject, html) VALUES (?, ?, ?)',
+      [to, subject, html]
+    );
+    return true;
+  } catch (err) {
+    console.error('Queue error:', err.message);
+    return false;
   }
-  return false;
 };
 
-const sendWelcomeEmail = async (to, username, password) =>
-  sendMail(to, 'Welcome to RUH Forum',
+const sendWelcomeEmail = async (to, username, password) => {
+  return queueEmail(to, 'Welcome to RUH Forum',
     `<div style="font-family:Arial;max-width:600px;margin:0 auto;background:#f5f0e8;padding:30px;border-radius:15px;">
       <h1 style="color:#1a5c2a;text-align:center;">🕌 RUH Forum</h1>
       <p style="text-align:center;color:#8b6914;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
@@ -39,13 +24,15 @@ const sendWelcomeEmail = async (to, username, password) =>
         <p><strong>Password:</strong> ${password}</p></div>
       <p style="color:#c0392b;">⚠ Change password after login.</p>
       <p>Jazakallah Khair!</p></div>`);
+};
 
-const sendDonationReceipt = async (to, name, amount, type) =>
-  sendMail(to, 'Donation Receipt - RUH Forum',
+const sendDonationReceipt = async (to, name, amount, type) => {
+  return queueEmail(to, 'Donation Receipt - RUH Forum',
     `<div style="font-family:Arial;max-width:600px;margin:0 auto;background:#f5f0e8;padding:30px;border-radius:15px;">
       <p>Assalamu Alaikum ${name},</p>
       <p>Thank you! Rs.${amount} - ${type}</p>
       <p>Status: Pending</p>
       <p>Jazakallah Khair!</p></div>`);
+};
 
 module.exports = { sendWelcomeEmail, sendDonationReceipt };
