@@ -1,0 +1,53 @@
+<%- include('../partials/header') %>
+<section class="auth-section">
+  <div class="container">
+    <div class="auth-card" style="max-width: 700px;">
+      <div class="auth-header">
+        <i class="fas fa-bullhorn"></i>
+        <h2>Create Campaign</h2>
+        <p>Only admins can create campaigns</p>
+      </div>
+      <form action="/admin/campaigns/create" method="POST">
+        <div class="form-group">
+          <label><i class="fas fa-heading"></i> Campaign Title *</label>
+          <input type="text" name="title" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-align-left"></i> Description</label>
+          <textarea name="description" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-tag"></i> Category</label>
+            <select name="category" class="form-control">
+              <option value="general">General</option>
+              <option value="education">Education</option>
+              <option value="health">Health</option>
+              <option value="emergency">Emergency</option>
+              <option value="masjid">Masjid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-money-bill-wave"></i> Target Amount (Rs.)</label>
+            <input type="number" name="target_amount" class="form-control" step="0.01" min="0">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-calendar-start"></i> Start Date</label>
+            <input type="date" name="start_date" class="form-control">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-calendar-end"></i> End Date</label>
+            <input type="date" name="end_date" class="form-control">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">
+          <i class="fas fa-check"></i> Create Campaign
+        </button>
+        <a href="/campaigns" class="btn btn-outline btn-full" style="margin-top:10px;">Cancel</a>
+      </form>
+    </div>
+  </div>
+</section>
+<%- include('../partials/footer') %>

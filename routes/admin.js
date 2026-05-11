@@ -109,4 +109,34 @@ router.post('/donations/:id/:action', isAdmin, async (req, res) => {
   }
 });
 
+router.get('/campaigns/create', isAdmin, (req, res) => {
+  res.render('admin/create-campaign', {
+    title: 'Create Campaign - RUH Forum',
+    user: req.session.user
+  });
+});
+
+router.post('/campaigns/create', isAdmin, async (req, res) => {
+  try {
+    const { title, description, category, target_amount, start_date, end_date } = req.body;
+    if (!title) {
+      req.flash('error', 'Title is required');
+      return res.redirect('/admin/campaigns/create');
+    }
+
+    await pool.query(
+      `INSERT INTO campaigns (title, description, category, target_amount, start_date, end_date)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [title, description, category || 'general', target_amount || 0, start_date || null, end_date || null]
+    );
+
+    req.flash('success', 'Campaign created successfully!');
+    res.redirect('/campaigns');
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'Failed to create campaign');
+    res.redirect('/admin/campaigns/create');
+  }
+});
+
 module.exports = router;
