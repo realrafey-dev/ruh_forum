@@ -1,35 +1,36 @@
-const nodemailer = require('nodemailer');
+const https = require('https');
 
-const getTransporter = () => {
-  const { EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASS } = process.env;
-  if (!EMAIL_USER || !EMAIL_PASS || EMAIL_USER === 'your-email@gmail.com') return null;
+const sendResend = async (to, subject, html) => {
+  const key = process.env.RESEND_API_KEY;
+  if (!key || key === 're_xxxx' || key.includes('dummy')) return { sent: false, error: 'no_key' };
 
-  return nodemailer.createTransport({
-    host: EMAIL_HOST || 'smtp.gmail.com',
-    port: parseInt(EMAIL_PORT || '587'),
-    secure: false,
-    auth: { user: EMAIL_USER, pass: EMAIL_PASS },
-    connectionTimeout: 15000,
-    greetingTimeout: 15000,
-    socketTimeout: 15000
+  return new Promise((resolve) => {
+    const data = JSON.stringify({ from: 'RUH Forum <onboarding@resend.dev>', to, subject, html });
+
+    const req = https.request({
+      hostname: 'api.resend.com', path: '/emails', method: 'POST',
+      headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) }
+    }, (res) => {
+      let body = '';
+      res.on('data', (c) => body += c);
+      res.on('end', () => {
+        if (res.statusCode === 200) resolve({ sent: true });
+        else {
+          const errMsg = `Resend ${res.statusCode}: ${body}`;
+          console.error(errMsg);
+          resolve({ sent: false, error: errMsg });
+        }
+      });
+    });
+
+    req.on('error', (e) => resolve({ sent: false, error: e.message }));
+    req.write(data);
+    req.end();
   });
 };
 
-const sendMail = async (to, subject, html) => {
-  const t = getTransporter();
-  if (!t) return { sent: false, error: 'not_configured' };
-
-  try {
-    await t.sendMail({ from: `"RUH Forum" <${process.env.EMAIL_USER}>`, to, subject, html });
-    return { sent: true };
-  } catch (err) {
-    console.error('Email error:', err.message, err.code);
-    return { sent: false, error: err.message };
-  }
-};
-
 const sendWelcomeEmail = async (to, username, password) => {
-  const r = await sendMail(to, 'Welcome to RUH Forum',
+  const r = await sendResend(to, 'Welcome to RUH Forum',
     `<div style="font-family:Arial;max-width:600px;margin:0 auto;background:#f5f0e8;padding:30px;border-radius:15px;">
       <h1 style="color:#1a5c2a;text-align:center;">🕌 RUH Forum</h1>
       <p style="text-align:center;color:#8b6914;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
@@ -39,19 +40,17 @@ const sendWelcomeEmail = async (to, username, password) => {
         <p><strong>Password:</strong> ${password}</p>
       </div>
       <p style="color:#c0392b;">⚠ Change password after login.</p>
-      <p>Jazakallah Khair!</p></div>`
-  );
+      <p>Jazakallah Khair!</p></div>`);
   return r.sent;
 };
 
 const sendDonationReceipt = async (to, name, amount, type) => {
-  const r = await sendMail(to, 'Donation Receipt - RUH Forum',
+  const r = await sendResend(to, 'Donation Receipt - RUH Forum',
     `<div style="font-family:Arial;max-width:600px;margin:0 auto;background:#f5f0e8;padding:30px;border-radius:15px;">
       <p>Assalamu Alaikum ${name},</p>
       <p>Thank you for your donation! (Rs.${amount} - ${type})</p>
       <p>Status: Pending Verification</p>
-      <p>Jazakallah Khair!</p></div>`
-  );
+      <p>Jazakallah Khair!</p></div>`);
   return r.sent;
 };
 
