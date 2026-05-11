@@ -102,7 +102,6 @@ const initDB = async () => {
     console.log('Database tables initialized');
   } catch (err) {
     console.error('Database initialization error:', err.message);
-    process.exit(1);
   }
 };
 

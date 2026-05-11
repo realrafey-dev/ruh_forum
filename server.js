@@ -57,17 +57,9 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-const start = async () => {
-  try {
-    await initDB();
-    app.listen(PORT, () => {
-      console.log(`RUH Forum running on http://localhost:${PORT}`);
-    });
-  } catch (err) {
-    console.error('Startup error:', err.message);
-  }
-};
-
-start();
+app.listen(PORT, () => {
+  console.log(`RUH Forum running on http://localhost:${PORT}`);
+  initDB().catch(err => console.error('DB init error:', err.message));
+});
 
 module.exports = app;
