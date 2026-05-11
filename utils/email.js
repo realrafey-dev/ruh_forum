@@ -37,7 +37,7 @@ const sendWelcomeEmail = async (to, username, password) => {
     });
     return true;
   } catch (err) {
-    console.error('Email send error:', err.message);
+    console.error('Email send error:', err.name, err.message, JSON.stringify(err));
     return false;
   }
 };
