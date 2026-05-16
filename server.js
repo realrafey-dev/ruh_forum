@@ -27,7 +27,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'ruh_forum_secret',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 24 * 60 * 60 * 1000 }
+  cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 }
 }));
 
 app.use(flash());

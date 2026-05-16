@@ -75,6 +75,17 @@ const initDB = async () => {
     `);
 
     await conn.query(`
+      CREATE TABLE IF NOT EXISTS password_resets (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(100) NOT NULL,
+        token VARCHAR(255) NOT NULL,
+        expires_at DATETIME NOT NULL,
+        used BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await conn.query(`
       CREATE TABLE IF NOT EXISTS email_queue (
         id INT AUTO_INCREMENT PRIMARY KEY,
         to_email VARCHAR(200) NOT NULL,
