@@ -31,15 +31,32 @@ const initDB = async () => {
         password VARCHAR(255) NOT NULL,
         full_name VARCHAR(100) NOT NULL,
         phone VARCHAR(20),
-        is_admin BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS admins (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL UNIQUE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    `);
+
     try {
-      await conn.query(`ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT FALSE`);
+      const adminEmail = process.env.ADMIN_EMAIL;
+      if (adminEmail) {
+        const [adminUsers] = await pool.query('SELECT id FROM users WHERE email = ?', [adminEmail]);
+        if (adminUsers.length > 0) {
+          await pool.query(
+            'INSERT IGNORE INTO admins (user_id) VALUES (?)',
+            [adminUsers[0].id]
+          );
+        }
+      }
     } catch (e) {
-      // Column already exists - ignore
+      // Admin auto-insert failed - ignore
     }
 
     await conn.query(`

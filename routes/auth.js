@@ -86,12 +86,16 @@ router.post('/login', isGuest, async (req, res) => {
       return res.redirect('/login');
     }
 
+    const [adminRows] = await pool.query(
+      'SELECT id FROM admins WHERE user_id = ?', [user.id]
+    );
+
     req.session.user = {
       id: user.id,
       username: user.username,
       email: user.email,
       full_name: user.full_name,
-      is_admin: user.is_admin || false
+      is_admin: adminRows.length > 0
     };
 
     res.redirect('/dashboard');

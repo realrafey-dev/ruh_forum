@@ -10,14 +10,14 @@ const isAdmin = async (req, res, next) => {
     return res.redirect('/login');
   }
 
-  const [users] = await pool.query('SELECT is_admin, email FROM users WHERE id = ?', [req.session.user.id]);
-  if (users.length === 0 || (!users[0].is_admin && users[0].email !== process.env.ADMIN_EMAIL)) {
+  const [admins] = await pool.query(
+    'SELECT id FROM admins WHERE user_id = ?',
+    [req.session.user.id]
+  );
+
+  if (admins.length === 0) {
     req.flash('error', 'Access denied. Admins only.');
     return res.redirect('/');
-  }
-
-  if (!users[0].is_admin) {
-    await pool.query('UPDATE users SET is_admin = TRUE WHERE id = ?', [req.session.user.id]);
   }
 
   next();
