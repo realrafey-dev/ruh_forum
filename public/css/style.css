@@ -211,8 +211,11 @@ body {
 }
 
 .mosque-icon {
-  font-size: 150px;
-  color: rgba(255,255,255,0.1);
+  width: 150px;
+  height: auto;
+  opacity: 0.15;
+  display: block;
+  margin: 0 auto;
 }
 
 /* BUTTONS */
@@ -1090,6 +1093,22 @@ body {
   font-size: 64px;
   color: var(--secondary);
   margin-bottom: 20px;
+}
+
+.error-logo {
+  width: 80px;
+  height: auto;
+  margin-bottom: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-logo {
+  height: 28px;
+  width: auto;
+  vertical-align: middle;
+  margin-right: 8px;
 }
 
 .error-card h1 {
