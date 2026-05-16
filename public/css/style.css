@@ -110,6 +110,10 @@ body {
   color: white;
   font-size: 24px;
   cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
 }
 
 /* FLASH MESSAGES */
@@ -1064,6 +1068,51 @@ body {
   text-align: center;
   padding: 50px 20px;
   color: var(--text-muted);
+  font-size: 16px;
+}
+
+.admin-section {
+  margin-top: 30px;
+  background: white;
+  padding: 25px;
+  border-radius: var(--radius);
+}
+
+.admin-section h3 {
+  color: var(--primary);
+  margin-bottom: 15px;
+}
+
+.admin-section form {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.admin-section form input {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 15px;
+  border: 2px solid #e0d6c8;
+  border-radius: var(--radius-sm);
+}
+
+.admin-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.admin-section table th {
+  background: var(--bg-light);
+  padding: 10px;
+  text-align: left;
+}
+
+.admin-section table td {
+  padding: 10px;
+  border-bottom: 1px solid #e0d6c8;
 }
 
 .empty-state i {
@@ -1193,25 +1242,73 @@ body {
 }
 
 /* RESPONSIVE */
+
+/* Tablet */
+@media (max-width: 992px) {
+  .hero-text h1 { font-size: 36px; }
+  .section-title { font-size: 26px; }
+  .trusts-grid { grid-template-columns: repeat(2, 1fr); }
+  .campaigns-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Mobile */
 @media (max-width: 768px) {
   .nav-menu {
-    display: none;
+    display: flex;
     flex-direction: column;
-    width: 100%;
-    position: absolute;
-    top: 60px;
-    left: 0;
+    width: 280px;
+    position: fixed;
+    top: 0;
+    right: -300px;
+    height: 100vh;
     background: var(--primary);
-    padding: 20px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    padding: 80px 25px 30px;
+    box-shadow: -5px 0 20px rgba(0,0,0,0.3);
+    transition: right 0.3s ease;
+    z-index: 1001;
+    overflow-y: auto;
   }
 
   .nav-menu.active {
+    right: 0;
+  }
+
+  .nav-menu li a {
+    padding: 14px 16px;
+    font-size: 16px;
     display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-menu li a i {
+    width: 20px;
+    text-align: center;
+  }
+
+  .nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+  }
+
+  .nav-overlay.active {
+    display: block;
   }
 
   .nav-toggle {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    z-index: 1002;
   }
 
   .hero-content {
@@ -1219,9 +1316,15 @@ body {
     text-align: center;
   }
 
-  .hero-text h1 { font-size: 32px; }
-  .hero-buttons { justify-content: center; }
+  .hero-text h1 { font-size: 28px; }
+  .hero-text .arabic-verse { font-size: 18px; }
+  .hero-desc { font-size: 14px; }
+  .hero-buttons { justify-content: center; flex-direction: column; align-items: center; }
+  .hero-buttons .btn { width: 100%; max-width: 280px; }
   .hero-image { display: none; }
+
+  .section-title { font-size: 22px; }
+  .page-header h1 { font-size: 24px; }
 
   .stats-grid,
   .features-grid,
@@ -1230,12 +1333,16 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .stat-card h3 { font-size: 22px; }
+  .dash-stat-card h3 { font-size: 20px; }
+
   .donate-methods,
   .zakat-layout {
     grid-template-columns: 1fr;
   }
 
-  .campaigns-grid {
+  .campaigns-grid,
+  .trusts-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1246,13 +1353,129 @@ body {
   .form-row {
     grid-template-columns: 1fr;
   }
+
+  .auth-card {
+    padding: 25px 20px;
+  }
+
+  .auth-header h2 { font-size: 20px; }
+
+  .bank-info-card,
+  .donate-form-card,
+  .detail-card {
+    padding: 20px;
+  }
+
+  .welcome-banner {
+    padding: 25px 20px;
+  }
+
+  .welcome-banner h1 { font-size: 24px; }
+  .welcome-banner p { font-size: 14px; }
+
+  .error-card { padding: 30px 20px; }
+  .error-card h1 { font-size: 50px; }
+
+  .donation-table-wrapper {
+    margin: 0 -15px;
+    border-radius: 0;
+  }
+
+  .donation-table th,
+  .donation-table td {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .dash-stat-card { padding: 15px; }
+  .dash-stat-card i { font-size: 28px; }
+
+  .action-card { padding: 15px; }
+  .action-card i { font-size: 28px; }
+  .action-card span { font-size: 13px; }
+
+  .trust-card { padding: 20px; }
+  .method-card { padding: 20px; }
+  .feature-card { padding: 25px 15px; }
+
+  .empty-state { font-size: 14px; padding: 30px 15px; }
+
+  .nav-logo-img { height: 42px; }
+
+  .flash-container {
+    top: 60px;
+    width: 95%;
+  }
+
+  .admin-section form {
+    flex-direction: column;
+  }
+
+  .admin-section form input {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .admin-section table {
+    font-size: 13px;
+  }
+
+  .admin-section table th,
+  .admin-section table td {
+    padding: 8px 6px;
+  }
+
+  .dashboard-stats {
+    gap: 10px;
+  }
+
+  .quick-actions {
+    gap: 10px;
+  }
 }
 
+/* Small phones */
 @media (max-width: 480px) {
   .stats-grid,
   .features-grid,
-  .dashboard-stats,
-  .quick-actions {
+  .dashboard-stats {
     grid-template-columns: 1fr;
   }
+
+  .quick-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero-text h1 { font-size: 24px; }
+
+  .section-title { font-size: 20px; }
+
+  .stat-card h3 { font-size: 20px; }
+  .stat-card p { font-size: 13px; }
+
+  .dash-stat-card { padding: 12px; }
+  .dash-stat-card h3 { font-size: 18px; }
+
+  .auth-card { padding: 20px 15px; }
+
+  .bank-info-card,
+  .donate-form-card {
+    padding: 15px;
+  }
+
+  .nav-menu {
+    width: 260px;
+    right: -280px;
+  }
+
+  .welcome-banner h1 { font-size: 20px; }
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+  .nav-logo-img { height: 36px; }
+  .nav-menu { width: 100%; right: -100%; }
+  .hero-text h1 { font-size: 20px; }
+  .quick-actions { grid-template-columns: 1fr; }
+  .auth-card { padding: 15px 10px; }
 }

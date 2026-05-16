@@ -52,27 +52,27 @@
       </a>
     </div>
 
-    <div class="admin-section" style="margin-top:30px;background:white;padding:25px;border-radius:12px;">
+    <div class="admin-section">
       <h3><i class="fas fa-user-shield"></i> Manage Admins</h3>
-      <form action="/admin/admins" method="POST" style="display:flex;gap:10px;margin:15px 0;flex-wrap:wrap;">
-        <input type="email" name="email" required placeholder="Enter user email" style="flex:1;min-width:200px;padding:10px 15px;border:2px solid #e0d6c8;border-radius:8px;">
+      <form action="/admin/admins" method="POST">
+        <input type="email" name="email" required placeholder="Enter user email">
         <button type="submit" class="btn btn-primary" style="padding:10px 20px;"><i class="fas fa-plus"></i> Add Admin</button>
       </form>
       <% if (adminList && adminList.length > 0) { %>
-        <table style="width:100%;border-collapse:collapse;margin-top:10px;">
+        <table>
           <thead>
-            <tr style="background:#f5f0e8;">
-              <th style="padding:10px;text-align:left;">Name</th>
-              <th style="padding:10px;text-align:left;">Email</th>
-              <th style="padding:10px;text-align:left;">Since</th>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Since</th>
             </tr>
           </thead>
           <tbody>
             <% adminList.forEach(function(a) { %>
-              <tr style="border-bottom:1px solid #e0d6c8;">
-                <td style="padding:10px;"><%= a.full_name %></td>
-                <td style="padding:10px;"><%= a.email %></td>
-                <td style="padding:10px;"><%= new Date(a.added_on).toLocaleDateString() %></td>
+              <tr>
+                <td><%= a.full_name %></td>
+                <td><%= a.email %></td>
+                <td><%= new Date(a.added_on).toLocaleDateString() %></td>
               </tr>
             <% }); %>
           </tbody>
