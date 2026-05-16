@@ -26,7 +26,7 @@ const isAdmin = async (req, res, next) => {
 router.get('/', isAdmin, async (req, res) => {
   try {
     const [[donationStats]] = await pool.query(
-      `SELECT COUNT(*) as total, COALESCE(SUM(amount),0) as amount FROM donations`
+      `SELECT COUNT(*) as total, COALESCE(SUM(CASE WHEN status = 'verified' THEN amount ELSE 0 END),0) as amount FROM donations`
     );
     const [[userCount]] = await pool.query('SELECT COUNT(*) as total FROM users');
     const [[trustCount]] = await pool.query('SELECT COUNT(*) as total FROM trusts');
