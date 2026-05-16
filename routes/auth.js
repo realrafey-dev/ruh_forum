@@ -42,7 +42,8 @@ router.post('/register', isGuest, async (req, res) => {
       id: result.insertId,
       username,
       email,
-      full_name
+      full_name,
+      is_admin: false
     };
 
     await sendWelcomeEmail(email, username, password);
@@ -89,7 +90,8 @@ router.post('/login', isGuest, async (req, res) => {
       id: user.id,
       username: user.username,
       email: user.email,
-      full_name: user.full_name
+      full_name: user.full_name,
+      is_admin: user.is_admin || false
     };
 
     res.redirect('/dashboard');

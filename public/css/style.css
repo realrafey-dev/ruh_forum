@@ -60,9 +60,16 @@ body {
 }
 
 .nav-logo-img {
-  height: 45px;
+  height: 55px;
   width: auto;
   display: block;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .nav-logo-img {
+    height: 42px;
+  }
 }
 
 .nav-menu {
@@ -498,6 +505,15 @@ body {
   font-size: 48px;
   color: var(--secondary);
   margin-bottom: 15px;
+}
+
+.auth-logo {
+  width: 100px;
+  height: auto;
+  margin-bottom: 15px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .auth-header h2 {

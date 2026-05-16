@@ -11,8 +11,8 @@
 <body>
   <nav class="navbar">
     <div class="container nav-container">
-      <a href="/" class="nav-logo">
-        <img src="/images/RUH_Forum_Logo.png" alt="RUH Forum" class="nav-logo-img">
+      <a href="/" class="nav-logo" aria-label="RUH Forum - Home">
+        <img src="/images/RUH_Forum_Logo.png" alt="RUH Forum" class="nav-logo-img" width="150" height="150" loading="lazy">
       </a>
       <button class="nav-toggle" id="navToggle">
         <i class="fas fa-bars"></i>
@@ -26,7 +26,9 @@
         <% if (user) { %>
           <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
           <li><a href="/change-password"><i class="fas fa-key"></i> Password</a></li>
-          <li><a href="/admin"><i class="fas fa-shield-alt" style="color:#ff6b6b;"></i> Admin</a></li>
+          <% if (user.is_admin) { %>
+            <li><a href="/admin"><i class="fas fa-shield-alt" style="color:#ff6b6b;"></i> Admin</a></li>
+          <% } %>
           <li><a href="/logout" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         <% } else { %>
           <li><a href="/login" class="btn-login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
