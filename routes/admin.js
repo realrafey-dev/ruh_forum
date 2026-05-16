@@ -35,6 +35,11 @@ router.get('/', isAdmin, async (req, res) => {
        FROM donations d LEFT JOIN trusts t ON d.trust_id = t.id
        ORDER BY d.created_at DESC LIMIT 10`
     );
+    const [adminList] = await pool.query(
+      `SELECT u.id, u.full_name, u.email, a.created_at as added_on
+       FROM admins a JOIN users u ON a.user_id = u.id
+       ORDER BY a.created_at ASC`
+    );
 
     res.render('admin/dashboard', {
       title: 'Admin - RUH Forum',
@@ -45,11 +50,36 @@ router.get('/', isAdmin, async (req, res) => {
         users: userCount.total,
         trusts: trustCount.total
       },
-      recentDonations
+      recentDonations,
+      adminList
     });
   } catch (err) {
     console.error(err);
     res.redirect('/');
+  }
+});
+
+router.post('/admins', isAdmin, async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      req.flash('error', 'Email is required');
+      return res.redirect('/admin');
+    }
+
+    const [users] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
+    if (users.length === 0) {
+      req.flash('error', 'No user found with this email');
+      return res.redirect('/admin');
+    }
+
+    await pool.query('INSERT IGNORE INTO admins (user_id) VALUES (?)', [users[0].id]);
+    req.flash('success', `${email} is now an admin!`);
+    res.redirect('/admin');
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'Failed to add admin');
+    res.redirect('/admin');
   }
 });
 
